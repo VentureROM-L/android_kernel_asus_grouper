@@ -6,7 +6,6 @@
  * Copyright (C) 2001 Networks Associates Technology, Inc <ssmalley@nai.com>
  * Copyright (C) 2001 James Morris <jmorris@intercode.com.au>
  * Copyright (C) 2001 Silicon Graphics, Inc. (Trust Technology Group)
- * Copyright (c) 2014 XPerience(R) Project
  *
  *	This program is free software; you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -1719,11 +1718,11 @@ int security_sb_parse_opts_str(char *options, struct security_mnt_opts *opts);
 int security_inode_alloc(struct inode *inode);
 void security_inode_free(struct inode *inode);
 int security_inode_init_security(struct inode *inode, struct inode *dir,
-				 const struct qstr *qstr, char **name,
-				 void **value, size_t *len);
-int security_new_inode_init_security(struct inode *inode, struct inode *dir,
 				 const struct qstr *qstr,
 				 initxattrs initxattrs, void *fs_data);
+int security_old_inode_init_security(struct inode *inode, struct inode *dir,
+				     const struct qstr *qstr, char **name,
+				     void **value, size_t *len);
 int security_inode_create(struct inode *dir, struct dentry *dentry, int mode);
 int security_inode_link(struct dentry *old_dentry, struct inode *dir,
 			 struct dentry *new_dentry);
@@ -2072,20 +2071,10 @@ static inline void security_inode_free(struct inode *inode)
 static inline int security_inode_init_security(struct inode *inode,
 						struct inode *dir,
 						const struct qstr *qstr,
-						char **name,
-						void **value,
-						size_t *len)
-{
-	return 0;
-}
-
-static inline int security_new_inode_init_security(struct inode *inode,
-						struct inode *dir,
-						const struct qstr *qstr,
 						initxattrs initxattrs,
 						void *fs_data)
 {
-	return 0;
+	return -EOPNOTSUPP;
 }
 
 static inline int security_inode_create(struct inode *dir,

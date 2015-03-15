@@ -4,7 +4,6 @@
  * Copyright (C) 2001 WireX Communications, Inc <chris@wirex.com>
  * Copyright (C) 2001-2002 Greg Kroah-Hartman <greg@kroah.com>
  * Copyright (C) 2001 Networks Associates Technology, Inc <ssmalley@nai.com>
- * Copyright (c) 2014 XPerience(R) Project
  *
  *	This program is free software; you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -362,19 +361,8 @@ void security_inode_free(struct inode *inode)
 }
 
 int security_inode_init_security(struct inode *inode, struct inode *dir,
-				 const struct qstr *qstr, char **name,
-				 void **value, size_t *len)
-{
-	if (unlikely(IS_PRIVATE(inode)))
-		return -EOPNOTSUPP;
-	return security_ops->inode_init_security(inode, dir, qstr, name, value,
-						 len);
-}
-EXPORT_SYMBOL(security_inode_init_security);
-
-int security_new_inode_init_security(struct inode *inode, struct inode *dir,
-					const struct qstr *qstr,
-					const initxattrs initxattrs, void *fs_data)
+				 const struct qstr *qstr,
+				 const initxattrs initxattrs, void *fs_data)
 {
 	struct xattr new_xattrs[MAX_LSM_XATTR + 1];
 	struct xattr *lsm_xattr;
@@ -401,7 +389,18 @@ out:
 
 	return (ret == -EOPNOTSUPP) ? 0 : ret;
 }
-EXPORT_SYMBOL(security_new_inode_init_security);
+EXPORT_SYMBOL(security_inode_init_security);
+
+int security_old_inode_init_security(struct inode *inode, struct inode *dir,
+				     const struct qstr *qstr, char **name,
+				     void **value, size_t *len)
+{
+	if (unlikely(IS_PRIVATE(inode)))
+		return -EOPNOTSUPP;
+	return security_ops->inode_init_security(inode, dir, qstr, name, value,
+						 len);
+}
+EXPORT_SYMBOL(security_old_inode_init_security);
 
 #ifdef CONFIG_SECURITY_PATH
 int security_path_mknod(struct path *dir, struct dentry *dentry, int mode,

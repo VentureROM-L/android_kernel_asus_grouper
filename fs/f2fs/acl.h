@@ -4,9 +4,6 @@
  * Copyright (c) 2012 Samsung Electronics Co., Ltd.
  *             http://www.samsung.com/
  *
- * Copyright (c) 2014 XPerience(R) Project
- *
- *
  * Portions of this code from linux/fs/ext2/acl.h
  *
  * Copyright (C) 2001-2003 Andreas Gruenbacher, <agruen@suse.de>
@@ -39,9 +36,10 @@ struct f2fs_acl_header {
 
 #ifdef CONFIG_F2FS_FS_POSIX_ACL
 
-extern struct posix_acl *f2fs_get_acl(struct inode *inode, int type);
-extern int f2fs_acl_chmod(struct inode *inode);
-extern int f2fs_init_acl(struct inode *inode, struct inode *dir);
+extern struct posix_acl *f2fs_get_acl(struct inode *, int);
+extern int f2fs_acl_chmod(struct inode *);
+extern int f2fs_init_acl(struct inode *, struct inode *, struct page *,
+							struct page *);
 #else
 #define f2fs_check_acl	NULL
 #define f2fs_get_acl	NULL
@@ -52,7 +50,8 @@ static inline int f2fs_acl_chmod(struct inode *inode)
 	return 0;
 }
 
-static inline int f2fs_init_acl(struct inode *inode, struct inode *dir)
+static inline int f2fs_init_acl(struct inode *inode, struct inode *dir,
+				struct page *ipage, struct page *dpage)
 {
 	return 0;
 }
